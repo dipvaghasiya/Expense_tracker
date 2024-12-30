@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
-import { addTransaction, getCategories } from "../services/api";
+import { useState } from "react";
+import { addTransaction } from "../services/api";
 import CategoryForm from "./CategoryForm";
+import { useAuth } from "../context/AuthContext";
 
 function TransactionForm({ onTransactionAdded }) {
+  const { categories, fetchCategories } = useAuth();
   const [formData, setFormData] = useState({
     amount: "",
     type: "expense",
@@ -10,21 +12,7 @@ function TransactionForm({ onTransactionAdded }) {
     description: "",
     date: new Date().toISOString().split("T")[0],
   });
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
-
-  const fetchCategories = async () => {
-    try {
-      const response = await getCategories();
-      setCategories(response.data);
-    } catch (err) {
-      console.error("Error fetching categories:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -36,14 +24,12 @@ function TransactionForm({ onTransactionAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Ensure amount is a number
       const transactionData = {
         ...formData,
         amount: Number(formData.amount)
       };
 
       await addTransaction(transactionData);
-      
       onTransactionAdded();
       setFormData({
         amount: "",

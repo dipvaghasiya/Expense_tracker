@@ -1,14 +1,15 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { getCategories } from "../services/api";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-   
     const storedUser = localStorage.getItem('user');
     try {
       if (storedUser) {
@@ -22,6 +23,21 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      fetchCategories();
+    }
+  }, [user]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getCategories();
+      setCategories(response.data);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
   const login = (userData) => {
     try {
       setUser(userData);
@@ -30,7 +46,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Error saving user data:", error);
     }
   };
-  
 
   const logout = () => {
     setUser(null);
@@ -38,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, categories, fetchCategories }}>
       {!loading && children}
     </AuthContext.Provider>
   );
