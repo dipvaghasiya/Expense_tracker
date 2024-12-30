@@ -40,6 +40,10 @@ export const addTransaction = async (transactionData) => {
   return api.post('/transactions', transactionData);
 };
 
+export const deleteTransaction = async (transactionId) => {
+  return api.delete(`/transactions/${transactionId}`);
+};
+
 export const getCategories = async () => {
   return api.get('/categories');
 };

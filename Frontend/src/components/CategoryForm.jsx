@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { addCategory } from "../services/api";
 import PropTypes from "prop-types";
+import { useAuth } from "../context/AuthContext";
 
 function CategoryForm({ onCategoryAdded }) {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const { fetchCategories } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await addCategory({ name });
-      setName("");
+      setName("");  
+      fetchCategories();
       onCategoryAdded();
     } catch (err) {
       setError(err.response?.data?.error || "Failed to add category");

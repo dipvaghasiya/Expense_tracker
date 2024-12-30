@@ -1,64 +1,41 @@
-import React, { useState, useEffect } from "react";
-import {
-  getCategories,
-  addCategory,
-  updateCategory,
-  deleteCategory,
-} from "../services/api";
+import React, { useState } from 'react';
+import { addCategory, updateCategory, deleteCategory } from '../services/api';
 
-function CategoryManager({ refreshTrigger }) {
-  const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState("");
-  const [editCategory, setEditCategory] = useState(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getCategories();
-        setCategories(response.data);
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-      }
-    };
-
-    fetchCategories();
-  }, [refreshTrigger]);
+function CategoryManager({ categories, onCategoryChange }) {
+  const [newCategory, setNewCategory] = useState('');
+  const [editCategoryId, setEditCategoryId] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState('');
+  const [error, setError] = useState('');
 
   const handleAddCategory = async () => {
     if (!newCategory) return;
     try {
-      const response = await addCategory({ name: newCategory });
-      setCategories([...categories, response.data]);
-      setNewCategory("");
+      await addCategory({ name: newCategory });
+      setNewCategory('');
+      onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || "An error occurred");
+      setError(err.response?.data?.error || 'An error occurred');
     }
   };
 
-  const handleEditCategory = async (category) => {
-    if (!editCategory) return;
+  const handleEditCategory = async (categoryId) => {
+    if (!editCategoryName) return;
     try {
-      const response = await updateCategory(category._id, {
-        name: editCategory,
-      });
-      setCategories(
-        categories.map((cat) =>
-          cat._id === category._id ? response.data : cat
-        )
-      );
-      setEditCategory(null);
+      await updateCategory(categoryId, { name: editCategoryName });
+      setEditCategoryId(null);
+      setEditCategoryName('');
+      onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || "An error occurred");
+      setError(err.response?.data?.error || 'An error occurred');
     }
   };
 
   const handleDeleteCategory = async (categoryId) => {
     try {
       await deleteCategory(categoryId);
-      setCategories(categories.filter((cat) => cat._id !== categoryId));
+      onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || "An error occurred");
+      setError(err.response?.data?.error || 'An error occurred');
     }
   };
 
@@ -83,31 +60,31 @@ function CategoryManager({ refreshTrigger }) {
       </div>
       <ul className="space-y-2">
         {categories.map((category) => (
-          <li
-            key={category._id}
-            className="flex justify-between items-center bg-white p-2 rounded-md shadow"
-          >
-            {editCategory === category._id ? (
+          <li key={category._id} className="flex justify-between items-center bg-white p-2 rounded-md shadow">
+            {editCategoryId === category._id ? (
               <input
                 type="text"
-                defaultValue={category.name}
-                onChange={(e) => setEditCategory(e.target.value)}
+                value={editCategoryName}
+                onChange={(e) => setEditCategoryName(e.target.value)}
                 className="border border-gray-300 rounded-md p-2"
               />
             ) : (
               <span>{category.name}</span>
             )}
             <div>
-              {editCategory === category._id ? (
+              {editCategoryId === category._id ? (
                 <button
-                  onClick={() => handleEditCategory(category)}
+                  onClick={() => handleEditCategory(category._id)}
                   className="bg-green-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-green-700 mr-2"
                 >
                   Save
                 </button>
               ) : (
                 <button
-                  onClick={() => setEditCategory(category._id)}
+                  onClick={() => {
+                    setEditCategoryId(category._id);
+                    setEditCategoryName(category.name);
+                  }}
                   className="bg-yellow-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-yellow-700 mr-2"
                 >
                   Edit

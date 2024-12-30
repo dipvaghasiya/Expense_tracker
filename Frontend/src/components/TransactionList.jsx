@@ -1,21 +1,55 @@
-import { useState, useEffect } from "react";
-import { getTransactions } from "../services/api";
+import React, { useEffect, useState } from 'react';
+import { getTransactions, deleteTransaction } from '../services/api';
 
-function TransactionList({ refreshTrigger }) {
+function TransactionList({ refreshTrigger, onTransactionChange, filters }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const response = await getTransactions();
-        setTransactions(response.data);
+        let filteredTransactions = response.data;
+
+        if (filters.dateRange !== 'all') {
+          const startDate = new Date(filters.startDate);
+          const endDate = new Date(filters.endDate);
+          filteredTransactions = filteredTransactions.filter(
+            (transaction) => {
+              const transactionDate = new Date(transaction.date);
+              return transactionDate >= startDate && transactionDate <= endDate;
+            }
+          );
+        }
+
+        if (filters.category) {
+          filteredTransactions = filteredTransactions.filter(
+            (transaction) => transaction.category._id === filters.category
+          );
+        }
+
+        if (filters.type) {
+          filteredTransactions = filteredTransactions.filter(
+            (transaction) => transaction.type === filters.type
+          );
+        }
+
+        setTransactions(filteredTransactions);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching transactions:', err);
       }
     };
 
     fetchTransactions();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, filters]);
+
+  const handleDeleteTransaction = async (transactionId) => {
+    try {
+      await deleteTransaction(transactionId);
+      onTransactionChange(); // Notify parent component to refresh
+    } catch (err) {
+      console.error('Error deleting transaction:', err);
+    }
+  };
 
   return (
     <div className="mt-6">
@@ -29,10 +63,10 @@ function TransactionList({ refreshTrigger }) {
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-medium">
-                  {transaction.description || "No description"}
+                  {transaction.description || 'No description'}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Category: {transaction.category?.name || "Uncategorized"}
+                  Category: {transaction.category?.name || 'Uncategorized'}
                 </p>
                 <p className="text-sm text-gray-500">
                   {new Date(transaction.date).toLocaleDateString()}
@@ -40,14 +74,20 @@ function TransactionList({ refreshTrigger }) {
               </div>
               <div
                 className={`font-semibold ${
-                  transaction.type === "income"
-                    ? "text-green-600"
-                    : "text-red-600"
+                  transaction.type === 'income'
+                    ? 'text-green-600'
+                    : 'text-red-600'
                 }`}
               >
-                {transaction.type === "income" ? "+" : "-"}$
+                {transaction.type === 'income' ? '+' : '-'}₹
                 {Math.abs(transaction.amount).toFixed(2)}
               </div>
+              <button
+                onClick={() => handleDeleteTransaction(transaction._id)}
+                className="bg-red-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-red-700 mt-2"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

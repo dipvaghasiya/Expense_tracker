@@ -1,24 +1,5 @@
 const Transaction = require("../models/transactionModel");
 
-const checkAlerts = async (categoryId, userId) => {
-  const category = await Category.findById(categoryId);
-  if (category.alertLimit > 0) {
-    const totalExpenses = await Transaction.aggregate([
-      { $match: { category: categoryId, user: userId, type: "expense" } },
-      { $group: { _id: null, total: { $sum: "$amount" } } },
-    ]);
-
-    const currentExpense = totalExpenses[0]?.total || 0;
-    const percentage = (currentExpense / category.alertLimit) * 100;
-
-    if (percentage >= 90) {
-      console.log("Alert: 90% of limit reached for category:", category.name);
-    } else if (percentage >= 50) {
-      console.log("Alert: 50% of limit reached for category:", category.name);
-    }
-  }
-};
-
 exports.createTransaction = async (req, res) => {
   try {
     const { amount, type, category, description, date } = req.body;
@@ -114,24 +95,39 @@ exports.deleteTransaction = async (req, res) => {
 
 exports.getSummary = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user.id });
+    const transactions = await Transaction.find({ user: req.user._id });
 
     const summary = transactions.reduce(
       (acc, transaction) => {
-        if (transaction.type === "income") {
-          acc.income += transaction.amount;
-        } else {
-          acc.expense += transaction.amount;
+        if (transaction.type === 'income') {
+          acc.totalIncome += transaction.amount;
+        } else if (transaction.type === 'expense') {
+          acc.totalExpense += transaction.amount;
         }
         return acc;
       },
-      { income: 0, expense: 0 }
+      { totalIncome: 0, totalExpense: 0 }
     );
 
-    summary.balance = summary.income - summary.expense;
+    summary.balance = summary.totalIncome - summary.totalExpense;
 
-    res.status(200).json(summary);
+    res.json(summary);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.addTransaction = async (req, res) => {
+  try {
+    const transaction = new Transaction({
+      ...req.body,
+      user: req.user._id,
+    });
+
+    await transaction.save();
+
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
   }
 };
