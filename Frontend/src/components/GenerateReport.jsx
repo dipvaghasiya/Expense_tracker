@@ -9,12 +9,28 @@ function GenerateReport({ filters }) {
       const response = await getTransactions();
       const transactions = response.data;
 
-      // Filter transactions based on the date range
+      // Determine if we should filter by date
+      const shouldFilterByDate = filters.dateRange !== 'all';
+
+      // Filter transactions based on the date range, category, and type
       const filteredTransactions = transactions.filter((transaction) => {
         const transactionDate = new Date(transaction.date);
         const startDate = new Date(filters.startDate);
         const endDate = new Date(filters.endDate);
-        return transactionDate >= startDate && transactionDate <= endDate;
+
+        const dateMatch = shouldFilterByDate
+          ? transactionDate >= startDate && transactionDate <= endDate
+          : true;
+
+        const categoryMatch = filters.category
+          ? transaction.category?._id === filters.category
+          : true;
+
+        const typeMatch = filters.type
+          ? transaction.type === filters.type
+          : true;
+
+        return dateMatch && categoryMatch && typeMatch;
       });
 
       const doc = new jsPDF();

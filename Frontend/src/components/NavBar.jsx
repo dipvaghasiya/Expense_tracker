@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
   const { logout, user } = useAuth();
@@ -8,7 +8,7 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -32,15 +32,26 @@ function Navbar() {
               Manage Categories
             </Link>
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <span className="text-sm">{user?.name}</span>
-            <button
-              onClick={handleLogout}
-              className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800"
-            >
-              Logout
-            </button>
+            {user ? (
+              <>
+                <span className="text-sm">{user.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

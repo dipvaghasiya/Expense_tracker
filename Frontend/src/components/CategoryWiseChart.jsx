@@ -54,7 +54,11 @@ function CategoryWiseChart() {
     <div className="bg-white p-6 rounded-lg shadow h-full">
       <h2 className="text-xl font-semibold mb-4">Transactions by Category</h2>
       <div className="relative w-full h-64 md:h-96">
-        {chartData ? <Pie data={chartData} options={{ maintainAspectRatio: false }} /> : <p>Loading chart...</p>}
+        {chartData && chartData.datasets[0].data.length > 0 ? (
+          <Pie data={chartData} options={{ maintainAspectRatio: false }} />
+        ) : (
+          <p className="text-gray-500">No data available for the chart.</p>
+        )}
       </div>
     </div>
   );

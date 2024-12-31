@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { registerUser } from '../services/api';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { registerUser } from "../services/api";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
+    name: "",
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -25,9 +25,9 @@ function RegisterPage() {
     try {
       const response = await registerUser(formData);
       login(response.data);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || "An error occurred");
     }
   };
 
@@ -40,9 +40,7 @@ function RegisterPage() {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="text-red-500 text-center">{error}</div>
-          )}
+          {error && <div className="text-red-500 text-center">{error}</div>}
           <div>
             <input
               name="name"
@@ -85,6 +83,12 @@ function RegisterPage() {
             </button>
           </div>
         </form>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600 hover:text-indigo-800">
+            Log in
+          </Link>
+        </p>
       </div>
     </div>
   );
