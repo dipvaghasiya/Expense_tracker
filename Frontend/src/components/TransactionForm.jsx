@@ -31,7 +31,7 @@ function TransactionForm({ categories, onTransactionAdded }) {
     e.preventDefault();
     try {
       await addTransaction(formData);
-      onTransactionAdded(); // Notify parent component
+      onTransactionAdded(); 
       setFormData({
         amount: "",
         type: "expense",

@@ -2,7 +2,7 @@ import React from "react";
 import { Pagination as MuiPagination } from "@mui/material";
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) return null; // No pagination needed if there's only one page
+  if (totalPages <= 1) return null; 
 
   return (
     <div
@@ -19,13 +19,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         count={totalPages}
         page={currentPage}
         onChange={(event, value) => onPageChange(value)}
-        color="success" // Using the green color theme
-        shape="circle" // Makes the pagination buttons circular
+        color="success" 
+        shape="circle" 
         variant="outlined"
         sx={{
           "& .MuiPaginationItem-root.Mui-selected": {
-            backgroundColor: "green", // Ensure selected button is green
-            color: "white", // Make text white on selection
+            backgroundColor: "green",
+            color: "white",
           },
         }}
       />

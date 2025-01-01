@@ -35,7 +35,7 @@ function DashboardPage() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#f9f9f9", // Light neutral color for loading
+          backgroundColor: "#f9f9f9",
           display: "flex",
           flexDirection: "column",
         }}
@@ -61,14 +61,13 @@ function DashboardPage() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#ffffff", // Set background color to white
+        backgroundColor: "#ffffff",
         paddingBottom: "2rem",
       }}
     >
       <Navbar />
 
       <Container maxWidth="xl" sx={{ py: 6 }}>
-        {/* Page Title */}
         <Typography
           variant="h3"
           fontWeight="bold"
@@ -78,10 +77,8 @@ function DashboardPage() {
           Dashboard
         </Typography>
 
-        {/* Summary Cards */}
         <SummaryCards summary={summary} />
 
-        {/* Charts */}
         <Grid container spacing={4} sx={{ mt: 6 }}>
           <Grid item xs={12} md={6}>
             <IncomeExpenseChart />

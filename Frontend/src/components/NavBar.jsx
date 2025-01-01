@@ -17,7 +17,7 @@ import { AccountCircle } from "@mui/icons-material";
 function Navbar() {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current location
+  const location = useLocation(); 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -38,12 +38,12 @@ function Navbar() {
     setAnchorEl(null);
   };
 
-  const isActiveLink = (path) => location.pathname === path; // Check if the link matches the current path
+  const isActiveLink = (path) => location.pathname === path; 
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#00695c" }}>
       <Toolbar>
-        {/* Logo */}
+        
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link
             to="/dashboard"
@@ -57,7 +57,7 @@ function Navbar() {
           </Link>
         </Typography>
 
-        {/* Desktop Menu */}
+      
         <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
           <Button
             color="inherit"
@@ -134,7 +134,7 @@ function Navbar() {
           </IconButton>
         </Box>
 
-        {/* Mobile Menu Items */}
+        
         {isMenuOpen && (
           <Box
             sx={{

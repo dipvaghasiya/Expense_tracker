@@ -23,7 +23,6 @@ function HomePage() {
         overflow: "hidden",
       }}
     >
-      {/* Background Gradient */}
       <Box
         sx={{
           position: "absolute",
@@ -42,7 +41,6 @@ function HomePage() {
           py: 6,
         }}
       >
-        {/* Header Section */}
         <Typography
           variant="h3"
           component="h1"
@@ -62,7 +60,6 @@ function HomePage() {
           your financial habits.
         </Typography>
 
-        {/* Call-to-Action Buttons */}
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 4 }}>
           <Button
             component={Link}
@@ -95,7 +92,6 @@ function HomePage() {
         </Box>
       </Box>
 
-      {/* Features Section */}
       <Box sx={{ mt: 8, px: 2 }}>
         <Grid container spacing={4}>
           {/* Feature 1 */}
@@ -121,7 +117,6 @@ function HomePage() {
             </Card>
           </Grid>
 
-          {/* Feature 2 */}
           <Grid item xs={12} md={4}>
             <Card
               sx={{
@@ -143,7 +138,6 @@ function HomePage() {
             </Card>
           </Grid>
 
-          {/* Feature 3 */}
           <Grid item xs={12} md={4}>
             <Card
               sx={{

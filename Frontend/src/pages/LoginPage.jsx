@@ -58,7 +58,6 @@ function LoginPage() {
           p: 4,
         }}
       >
-        {/* Title */}
         <Typography
           component="h1"
           variant="h4"
@@ -70,14 +69,12 @@ function LoginPage() {
           Sign in to your account
         </Typography>
 
-        {/* Error Message */}
         {error && (
           <Alert severity="error" sx={{ mb: 2, textAlign: "center" }}>
             {error}
           </Alert>
         )}
 
-        {/* Form */}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
           <TextField
             margin="normal"
@@ -124,7 +121,6 @@ function LoginPage() {
             Sign in
           </Button>
 
-          {/* Redirect to Register */}
           <Grid container justifyContent="center" sx={{ mt: 3 }}>
             <Typography variant="body2">
               Don&apos;t have an account?{" "}

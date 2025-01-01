@@ -20,7 +20,7 @@ function CategoryManager({ categories, onCategoryChange }) {
     try {
       await addCategory({ name: newCategory });
       setNewCategory("");
-      onCategoryChange(); // Notify parent component
+      onCategoryChange(); 
     } catch (err) {
       setError(err.response?.data?.error || "An error occurred");
     }
@@ -32,7 +32,7 @@ function CategoryManager({ categories, onCategoryChange }) {
       await updateCategory(categoryId, { name: editCategoryName });
       setEditCategoryId(null);
       setEditCategoryName("");
-      onCategoryChange(); // Notify parent component
+      onCategoryChange(); 
     } catch (err) {
       setError(err.response?.data?.error || "An error occurred");
     }
@@ -41,7 +41,7 @@ function CategoryManager({ categories, onCategoryChange }) {
   const handleDeleteCategory = async (categoryId) => {
     try {
       await deleteCategory(categoryId);
-      onCategoryChange(); // Notify parent component
+      onCategoryChange(); 
     } catch (err) {
       setError(err.response?.data?.error || "An error occurred");
     }
@@ -67,8 +67,8 @@ function CategoryManager({ categories, onCategoryChange }) {
           variant="contained"
           sx={{
             width: "100%",
-            backgroundColor: "#4CAF50", // Green color
-            "&:hover": { backgroundColor: "#45a049" }, // Darker green on hover
+            backgroundColor: "#4CAF50", 
+            "&:hover": { backgroundColor: "#45a049" }, 
           }}
         >
           Add Category

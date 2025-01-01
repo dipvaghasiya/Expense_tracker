@@ -9,9 +9,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment,
-  TextField,
-  Button,
+  TextField,  
 } from "@mui/material";
 
 function TransactionHistoryPage() {
@@ -80,7 +78,6 @@ function TransactionHistoryPage() {
           <GenerateReport filters={filters} />
         </div>
 
-        {/* Use Material UI Grid layout to organize the form */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={3}>
             <FormControl fullWidth>

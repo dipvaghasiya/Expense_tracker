@@ -1,4 +1,3 @@
-import React from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { getTransactions } from "../services/api";
@@ -10,10 +9,8 @@ function GenerateReport({ filters }) {
       const response = await getTransactions();
       const transactions = response.data;
 
-      // Determine if we should filter by date
       const shouldFilterByDate = filters.dateRange !== "all";
 
-      // Filter transactions based on the date range, category, and type
       const filteredTransactions = transactions.filter((transaction) => {
         const transactionDate = new Date(transaction.date);
         const startDate = new Date(filters.startDate);
