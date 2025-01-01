@@ -1,20 +1,28 @@
-import React, { useState } from 'react';
-import { addCategory, updateCategory, deleteCategory } from '../services/api';
+import { useState } from "react";
+import { addCategory, updateCategory, deleteCategory } from "../services/api";
+import {
+  TextField,
+  Button,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { Edit, Delete, Save } from "@mui/icons-material";
 
 function CategoryManager({ categories, onCategoryChange }) {
-  const [newCategory, setNewCategory] = useState('');
+  const [newCategory, setNewCategory] = useState("");
   const [editCategoryId, setEditCategoryId] = useState(null);
-  const [editCategoryName, setEditCategoryName] = useState('');
-  const [error, setError] = useState('');
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [error, setError] = useState("");
 
   const handleAddCategory = async () => {
     if (!newCategory) return;
     try {
       await addCategory({ name: newCategory });
-      setNewCategory('');
+      setNewCategory("");
       onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || "An error occurred");
     }
   };
 
@@ -23,10 +31,10 @@ function CategoryManager({ categories, onCategoryChange }) {
     try {
       await updateCategory(categoryId, { name: editCategoryName });
       setEditCategoryId(null);
-      setEditCategoryName('');
+      setEditCategoryName("");
       onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || "An error occurred");
     }
   };
 
@@ -35,72 +43,86 @@ function CategoryManager({ categories, onCategoryChange }) {
       await deleteCategory(categoryId);
       onCategoryChange(); // Notify parent component
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || "An error occurred");
     }
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Manage Categories</h2>
-      {error && <div className="text-red-500">{error}</div>}
+    <Paper sx={{ p: 3, backgroundColor: "#ffffff" }}>
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+        Manage Categories
+      </Typography>
+      {error && <Typography color="error">{error}</Typography>}
       <div className="mb-4">
-        <input
-          type="text"
+        <TextField
+          label="New Category"
+          variant="outlined"
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
-          placeholder="New category"
-          className="border border-gray-300 rounded-md p-2 mr-2"
+          fullWidth
+          sx={{ mb: 2 }}
         />
-        <button
+        <Button
           onClick={handleAddCategory}
-          className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-700"
+          variant="contained"
+          sx={{
+            width: "100%",
+            backgroundColor: "#4CAF50", // Green color
+            "&:hover": { backgroundColor: "#45a049" }, // Darker green on hover
+          }}
         >
-          Add
-        </button>
+          Add Category
+        </Button>
       </div>
       <ul className="space-y-2">
         {categories.map((category) => (
-          <li key={category._id} className="flex justify-between items-center bg-white p-2 rounded-md shadow">
+          <li
+            key={category._id}
+            className="flex justify-between items-center bg-white p-2 rounded-md shadow"
+          >
             {editCategoryId === category._id ? (
-              <input
-                type="text"
+              <TextField
+                label="Edit Category"
+                variant="outlined"
                 value={editCategoryName}
                 onChange={(e) => setEditCategoryName(e.target.value)}
-                className="border border-gray-300 rounded-md p-2"
+                sx={{ flex: 1, mr: 2 }}
               />
             ) : (
-              <span>{category.name}</span>
+              <Typography variant="body1">{category.name}</Typography>
             )}
             <div>
               {editCategoryId === category._id ? (
-                <button
+                <IconButton
                   onClick={() => handleEditCategory(category._id)}
-                  className="bg-green-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-green-700 mr-2"
+                  color="success"
+                  sx={{ mr: 1 }}
                 >
-                  Save
-                </button>
+                  <Save />
+                </IconButton>
               ) : (
-                <button
+                <IconButton
                   onClick={() => {
                     setEditCategoryId(category._id);
                     setEditCategoryName(category.name);
                   }}
-                  className="bg-yellow-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-yellow-700 mr-2"
+                  color="warning"
+                  sx={{ mr: 1 }}
                 >
-                  Edit
-                </button>
+                  <Edit />
+                </IconButton>
               )}
-              <button
+              <IconButton
                 onClick={() => handleDeleteCategory(category._id)}
-                className="bg-red-600 text-white py-1 px-3 rounded-md shadow-sm hover:bg-red-700"
+                color="error"
               >
-                Delete
-              </button>
+                <Delete />
+              </IconButton>
             </div>
           </li>
         ))}
       </ul>
-    </div>
+    </Paper>
   );
 }
 

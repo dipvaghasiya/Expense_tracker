@@ -1,12 +1,25 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaBars, FaTimes } from "react-icons/fa";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+  Typography,
+  Box,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import { AccountCircle } from "@mui/icons-material";
 
 function Navbar() {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogout = () => {
     logout();
@@ -17,76 +30,183 @@ function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const isActiveLink = (path) => location.pathname === path; // Check if the link matches the current path
+
   return (
-    <nav className="bg-indigo-600 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-4">
-            <Link to="/dashboard" className="text-xl font-bold">
-              Expense Manager
-            </Link>
-          </div>
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            <Link to="/dashboard" className="hover:text-gray-300">
-              Dashboard
-            </Link>
-            <Link to="/add-transaction" className="hover:text-gray-300">
-              Add Transaction
-            </Link>
-            <Link to="/transaction-history" className="hover:text-gray-300">
-              Transaction History
-            </Link>
-            <Link to="/manage-categories" className="hover:text-gray-300">
-              Manage Categories
-            </Link>
-            {user ? (
-              <>
-                <span className="text-sm">{user?.name}</span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800"
+    <AppBar position="sticky" sx={{ backgroundColor: "#00695c" }}>
+      <Toolbar>
+        {/* Logo */}
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Link
+            to="/dashboard"
+            style={{
+              color: "white",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Expense Manager
+          </Link>
+        </Typography>
+
+        {/* Desktop Menu */}
+        <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/dashboard"
+            sx={{ fontWeight: isActiveLink("/dashboard") ? "bold" : "normal" }}
+          >
+            Dashboard
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/add-transaction"
+            sx={{
+              fontWeight: isActiveLink("/add-transaction") ? "bold" : "normal",
+            }}
+          >
+            Add Transaction
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/transaction-history"
+            sx={{
+              fontWeight: isActiveLink("/transaction-history")
+                ? "bold"
+                : "normal",
+            }}
+          >
+            Transaction History
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/manage-categories"
+            sx={{
+              fontWeight: isActiveLink("/manage-categories")
+                ? "bold"
+                : "normal",
+            }}
+          >
+            Manage Categories
+          </Button>
+          {user ? (
+            <>
+              <IconButton
+                edge="end"
+                color="inherit"
+                onClick={handleMenuClick}
+                sx={{ marginLeft: 2 }}
               >
-                Login
-              </Link>
-            )}
-          </div>
-          <div className="flex items-center md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="text-white focus:outline-none"
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem disabled>{user?.name}</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <Button color="inherit" component={Link} to="/login">
+              Login
+            </Button>
+          )}
+        </Box>
+
+        {/* Mobile Menu */}
+        <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <IconButton color="inherit" onClick={toggleMenu}>
+            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </IconButton>
+        </Box>
+
+        {/* Mobile Menu Items */}
+        {isMenuOpen && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "64px",
+              right: "0",
+              backgroundColor: "#00695c",
+              width: "100%",
+              display: { xs: "block", md: "none" },
+              padding: 2,
+            }}
+          >
+            <Link
+              to="/dashboard"
+              style={{
+                display: "block",
+                color: isActiveLink("/dashboard") ? "#ffeb3b" : "white",
+                padding: "10px",
+              }}
             >
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
-          </div>
-        </div>
-        <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"}`}>
-          <div className="flex flex-col space-y-2 mt-2">
-            <Link to="/dashboard" className="hover:text-gray-300">
               Dashboard
             </Link>
-            <Link to="/add-transaction" className="hover:text-gray-300">
+            <Link
+              to="/add-transaction"
+              style={{
+                display: "block",
+                color: isActiveLink("/add-transaction") ? "#ffeb3b" : "white",
+                padding: "10px",
+              }}
+            >
               Add Transaction
             </Link>
-            <Link to="/transaction-history" className="hover:text-gray-300">
+            <Link
+              to="/transaction-history"
+              style={{
+                display: "block",
+                color: isActiveLink("/transaction-history")
+                  ? "#ffeb3b"
+                  : "white",
+                padding: "10px",
+              }}
+            >
               Transaction History
             </Link>
-            <Link to="/manage-categories" className="hover:text-gray-300">
+            <Link
+              to="/manage-categories"
+              style={{
+                display: "block",
+                color: isActiveLink("/manage-categories") ? "#ffeb3b" : "white",
+                padding: "10px",
+              }}
+            >
               Manage Categories
             </Link>
             {user ? (
               <>
-                <span className="text-sm">{user?.name}</span>
+                <span
+                  style={{ display: "block", color: "white", padding: "10px" }}
+                >
+                  {user?.name}
+                </span>
                 <button
                   onClick={handleLogout}
-                  className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800 mt-2"
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    backgroundColor: "#004d40",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
                 >
                   Logout
                 </button>
@@ -94,15 +214,23 @@ function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="bg-indigo-700 px-4 py-2 rounded-md text-sm hover:bg-indigo-800 mt-2"
+                style={{
+                  display: "block",
+                  backgroundColor: "#004d40",
+                  padding: "10px",
+                  color: "white",
+                  textAlign: "center",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                }}
               >
                 Login
               </Link>
             )}
-          </div>
-        </div>
-      </div>
-    </nav>
+          </Box>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
 

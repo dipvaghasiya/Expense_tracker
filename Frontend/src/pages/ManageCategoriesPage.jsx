@@ -35,8 +35,7 @@ function ManageCategoriesPage() {
         ) : (
           <ul>
             {categories.map((category) => (
-              <li key={category._id} className="mb-2">
-              </li>
+              <li key={category._id} className="mb-2"></li>
             ))}
           </ul>
         )}

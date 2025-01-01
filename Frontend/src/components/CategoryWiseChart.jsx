@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { getTransactions } from '../services/api';
+import React, { useEffect, useState } from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { getTransactions } from "../services/api";
 
 // Register the necessary components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -16,7 +16,7 @@ function CategoryWiseChart() {
         const transactions = response.data;
 
         const categoryTotals = transactions.reduce((acc, transaction) => {
-          const categoryName = transaction.category?.name || 'Uncategorized';
+          const categoryName = transaction.category?.name || "Uncategorized";
           if (!acc[categoryName]) {
             acc[categoryName] = 0;
           }
@@ -43,7 +43,7 @@ function CategoryWiseChart() {
           ],
         });
       } catch (err) {
-        console.error('Error fetching transactions:', err);
+        console.error("Error fetching transactions:", err);
       }
     };
 
@@ -51,7 +51,7 @@ function CategoryWiseChart() {
   }, []);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow h-full">
+    <div className="bg-gray-100 p-6 rounded-lg shadow h-full">
       <h2 className="text-xl font-semibold mb-4">Transactions by Category</h2>
       <div className="relative w-full h-64 md:h-96">
         {chartData && chartData.datasets[0].data.length > 0 ? (
@@ -64,4 +64,4 @@ function CategoryWiseChart() {
   );
 }
 
-export default CategoryWiseChart; 
+export default CategoryWiseChart;

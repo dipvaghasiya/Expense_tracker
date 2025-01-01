@@ -1,7 +1,8 @@
-import React from 'react';
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { getTransactions } from '../services/api';
+import React from "react";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { getTransactions } from "../services/api";
+import { Button, Box } from "@mui/material";
 
 function GenerateReport({ filters }) {
   const generatePDF = async () => {
@@ -10,7 +11,7 @@ function GenerateReport({ filters }) {
       const transactions = response.data;
 
       // Determine if we should filter by date
-      const shouldFilterByDate = filters.dateRange !== 'all';
+      const shouldFilterByDate = filters.dateRange !== "all";
 
       // Filter transactions based on the date range, category, and type
       const filteredTransactions = transactions.filter((transaction) => {
@@ -34,19 +35,19 @@ function GenerateReport({ filters }) {
       });
 
       const doc = new jsPDF();
-      doc.text('Transaction Report', 14, 16);
+      doc.text("Transaction Report", 14, 16);
       doc.setFontSize(12);
 
-      const tableColumn = ['Date', 'Description', 'Category', 'Type', 'Amount'];
+      const tableColumn = ["Date", "Description", "Category", "Type", "Amount"];
       const tableRows = [];
 
       filteredTransactions.forEach((transaction) => {
         const transactionData = [
           new Date(transaction.date).toLocaleDateString(),
-          transaction.description || 'No description',
-          transaction.category?.name || 'Uncategorized',
+          transaction.description || "No description",
+          transaction.category?.name || "Uncategorized",
           transaction.type,
-          `₹${transaction.amount.toFixed(2)}`.replace(/^\D+/g, ''),
+          `₹${transaction.amount.toFixed(2)}`.replace(/^\D+/g, ""),
         ];
         tableRows.push(transactionData);
       });
@@ -57,20 +58,34 @@ function GenerateReport({ filters }) {
         startY: 20,
       });
 
-      doc.save('transaction_report.pdf');
+      doc.save("transaction_report.pdf");
     } catch (err) {
-      console.error('Error generating PDF:', err);
+      console.error("Error generating PDF:", err);
     }
   };
 
   return (
-    <button
-      onClick={generatePDF}
-      className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-700"
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      sx={{ height: "100%", width: "100%" }}
     >
-      Generate PDF Report
-    </button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={generatePDF}
+        sx={{
+          padding: "10px 20px",
+          fontSize: "16px",
+          backgroundColor: "#4CAF50",
+          "&:hover": { backgroundColor: "#45a049" },
+        }}
+      >
+        Generate PDF Report
+      </Button>
+    </Box>
   );
 }
 
-export default GenerateReport; 
+export default GenerateReport;

@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '../components/NavBar';
-import SummaryCards from '../components/SummaryCard';
-import IncomeExpenseChart from '../components/IncomeExpenseChart';
-import CategoryWiseChart from '../components/CategoryWiseChart';
-import { useAuth } from '../context/AuthContext';
-import { getSummary } from '../services/api';
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/NavBar";
+import SummaryCards from "../components/SummaryCard";
+import IncomeExpenseChart from "../components/IncomeExpenseChart";
+import CategoryWiseChart from "../components/CategoryWiseChart";
+import { useAuth } from "../context/AuthContext";
+import { getSummary } from "../services/api";
+import { Box, Container, Grid, Typography } from "@mui/material";
 
 function DashboardPage() {
   const [summary, setSummary] = useState({
     totalIncome: 0,
-    totalExpense: 0
+    totalExpense: 0,
   });
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -19,7 +20,7 @@ function DashboardPage() {
       const response = await getSummary();
       setSummary(response.data);
     } catch (error) {
-      console.error('Error fetching summary:', error);
+      console.error("Error fetching summary:", error);
     } finally {
       setLoading(false);
     }
@@ -31,32 +32,66 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#f9f9f9", // Light neutral color for loading
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Navbar />
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-xl">Loading...</div>
-        </div>
-      </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <Typography variant="h4" color="textSecondary">
+            Loading...
+          </Typography>
+        </Box>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#ffffff", // Set background color to white
+        paddingBottom: "2rem",
+      }}
+    >
       <Navbar />
-      
-      <main className="max-w-7xl mx-auto py-6 px-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        </div>
 
+      <Container maxWidth="xl" sx={{ py: 6 }}>
+        {/* Page Title */}
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          color="textPrimary"
+          sx={{ mb: 4 }}
+        >
+          Dashboard
+        </Typography>
+
+        {/* Summary Cards */}
         <SummaryCards summary={summary} />
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <IncomeExpenseChart />
-          <CategoryWiseChart />
-        </div>
-      </main>
-    </div>
+        {/* Charts */}
+        <Grid container spacing={4} sx={{ mt: 6 }}>
+          <Grid item xs={12} md={6}>
+            <IncomeExpenseChart />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <CategoryWiseChart />
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 }
 

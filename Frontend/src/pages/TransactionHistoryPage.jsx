@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '../components/NavBar';
-import TransactionList from '../components/TransactionList';
-import { getCategories } from '../services/api';
-import GenerateReport from '../components/GenerateReport';
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/NavBar";
+import TransactionList from "../components/TransactionList";
+import { getCategories } from "../services/api";
+import GenerateReport from "../components/GenerateReport";
+import {
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  InputAdornment,
+  TextField,
+  Button,
+} from "@mui/material";
 
 function TransactionHistoryPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState({
-    dateRange: 'all',
-    startDate: '',
-    endDate: '',
-    category: '',
-    type: ''
+    dateRange: "all",
+    startDate: "",
+    endDate: "",
+    category: "",
+    type: "",
   });
 
   useEffect(() => {
@@ -21,7 +31,7 @@ function TransactionHistoryPage() {
         const response = await getCategories();
         setCategories(response.data);
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        console.error("Error fetching categories:", err);
       }
     };
 
@@ -35,7 +45,7 @@ function TransactionHistoryPage() {
   const handleFilterChange = (e) => {
     setFilters({
       ...filters,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -43,17 +53,17 @@ function TransactionHistoryPage() {
     const now = new Date();
     let startDate = new Date();
     switch (range) {
-      case 'lastWeek':
+      case "lastWeek":
         startDate.setDate(now.getDate() - 7);
         break;
-      case 'lastMonth':
+      case "lastMonth":
         startDate.setMonth(now.getMonth() - 1);
         break;
-      case 'lastYear':
+      case "lastYear":
         startDate.setFullYear(now.getFullYear() - 1);
         break;
       default:
-        startDate = '';
+        startDate = "";
     }
     return startDate;
   };
@@ -62,99 +72,117 @@ function TransactionHistoryPage() {
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto py-6 px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Transaction History</h1>
-        
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          Transaction History
+        </h1>
+
         <div className="mb-4">
           <GenerateReport filters={filters} />
         </div>
 
-        <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Date Range</label>
-            <select
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={(e) => {
-                const range = e.target.value;
-                setFilters({
-                  ...filters,
-                  dateRange: range,
-                  startDate: range !== 'custom' ? calculateDateRange(range) : '',
-                  endDate: range !== 'custom' ? new Date() : ''
-                });
-              }}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="all">All Time</option>
-              <option value="lastWeek">Last Week</option>
-              <option value="lastMonth">Last Month</option>
-              <option value="lastYear">Last Year</option>
-              <option value="custom">Custom Range</option>
-            </select>
-          </div>
-          {filters.dateRange === 'custom' && (
+        {/* Use Material UI Grid layout to organize the form */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={3}>
+            <FormControl fullWidth>
+              <InputLabel>Date Range</InputLabel>
+              <Select
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={(e) => {
+                  const range = e.target.value;
+                  setFilters({
+                    ...filters,
+                    dateRange: range,
+                    startDate:
+                      range !== "custom" ? calculateDateRange(range) : "",
+                    endDate: range !== "custom" ? new Date() : "",
+                  });
+                }}
+              >
+                <MenuItem value="all">All Time</MenuItem>
+                <MenuItem value="lastWeek">Last Week</MenuItem>
+                <MenuItem value="lastMonth">Last Month</MenuItem>
+                <MenuItem value="lastYear">Last Year</MenuItem>
+                <MenuItem value="custom">Custom Range</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {filters.dateRange === "custom" && (
             <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                <input
+              <Grid item xs={12} md={3}>
+                <TextField
+                  label="Start Date"
                   type="date"
                   name="startDate"
                   value={filters.startDate}
                   onChange={handleFilterChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">End Date</label>
-                <input
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField
+                  label="End Date"
                   type="date"
                   name="endDate"
                   value={filters.endDate}
                   onChange={handleFilterChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
-              </div>
+              </Grid>
             </>
           )}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Category</label>
-            <select
-              name="category"
-              value={filters.category}
-              onChange={handleFilterChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">All Categories</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Type</label>
-            <select
-              name="type"
-              value={filters.type}
-              onChange={handleFilterChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">All Types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-          </div>
-        </div>
 
-        <TransactionList
-          refreshTrigger={refreshTrigger}
-          onTransactionChange={handleTransactionChange}
-          filters={filters}
-        />
+          <Grid item xs={12} md={3}>
+            <FormControl fullWidth>
+              <InputLabel>Category</InputLabel>
+              <Select
+                name="category"
+                value={filters.category}
+                onChange={handleFilterChange}
+              >
+                <MenuItem value="">All Categories</MenuItem>
+                {categories.map((category) => (
+                  <MenuItem key={category._id} value={category._id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={3}>
+            <FormControl fullWidth>
+              <InputLabel>Type</InputLabel>
+              <Select
+                name="type"
+                value={filters.type}
+                onChange={handleFilterChange}
+              >
+                <MenuItem value="">All Types</MenuItem>
+                <MenuItem value="income">Income</MenuItem>
+                <MenuItem value="expense">Expense</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+
+        <div className="mt-4">
+          <TransactionList
+            refreshTrigger={refreshTrigger}
+            onTransactionChange={handleTransactionChange}
+            filters={filters}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-export default TransactionHistoryPage; 
+export default TransactionHistoryPage;
