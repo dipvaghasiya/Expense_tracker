@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api";
 
-// Create axios instance with base configuration
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -10,7 +9,6 @@ const api = axios.create({
   }
 });
 
-// Add token to requests if it exists
 api.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (user?.token) {
@@ -31,7 +29,6 @@ export const getSummary = async () => {
   return api.get('/transactions/summary');
 };
 
-// Add more API functions as needed
 export const getTransactions = async () => {
   return api.get('/transactions');
 };

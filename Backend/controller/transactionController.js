@@ -12,8 +12,8 @@ exports.createTransaction = async (req, res) => {
           amount: !amount ? "Amount is required" : null,
           type: !type ? "Type is required" : null,
           category: !category ? "Category is required" : null,
-          date: !date ? "Date is required" : null
-        }
+          date: !date ? "Date is required" : null,
+        },
       });
     }
 
@@ -21,7 +21,7 @@ exports.createTransaction = async (req, res) => {
     if (isNaN(amount)) {
       return res.status(400).json({
         error: "Invalid amount",
-        details: "Amount must be a number"
+        details: "Amount must be a number",
       });
     }
 
@@ -32,19 +32,19 @@ exports.createTransaction = async (req, res) => {
       category,
       description: description || "",
       date: new Date(date),
-      user: req.user._id
+      user: req.user._id,
     });
 
     const savedTransaction = await transaction.save();
-    await savedTransaction.populate('category');
-    
+    await savedTransaction.populate("category");
+
     res.status(201).json(savedTransaction);
   } catch (error) {
-    console.error('Transaction creation error:', error);
-    res.status(500).json({ 
+    console.error("Transaction creation error:", error);
+    res.status(500).json({
       error: "Failed to create transaction",
       details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 };
@@ -99,9 +99,9 @@ exports.getSummary = async (req, res) => {
 
     const summary = transactions.reduce(
       (acc, transaction) => {
-        if (transaction.type === 'income') {
+        if (transaction.type === "income") {
           acc.totalIncome += transaction.amount;
-        } else if (transaction.type === 'expense') {
+        } else if (transaction.type === "expense") {
           acc.totalExpense += transaction.amount;
         }
         return acc;
@@ -113,7 +113,7 @@ exports.getSummary = async (req, res) => {
 
     res.json(summary);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -128,6 +128,6 @@ exports.addTransaction = async (req, res) => {
 
     res.status(201).json(transaction);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 };

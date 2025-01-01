@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -17,7 +17,7 @@ import { AccountCircle } from "@mui/icons-material";
 function Navbar() {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -38,12 +38,11 @@ function Navbar() {
     setAnchorEl(null);
   };
 
-  const isActiveLink = (path) => location.pathname === path; 
+  const isActiveLink = (path) => location.pathname === path;
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#00695c" }}>
       <Toolbar>
-        
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link
             to="/dashboard"
@@ -57,7 +56,6 @@ function Navbar() {
           </Link>
         </Typography>
 
-      
         <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
           <Button
             color="inherit"
@@ -127,14 +125,12 @@ function Navbar() {
           )}
         </Box>
 
-        {/* Mobile Menu */}
         <Box sx={{ display: { xs: "flex", md: "none" } }}>
           <IconButton color="inherit" onClick={toggleMenu}>
             {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
           </IconButton>
         </Box>
 
-        
         {isMenuOpen && (
           <Box
             sx={{

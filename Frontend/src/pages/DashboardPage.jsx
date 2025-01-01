@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/NavBar";
 import SummaryCards from "../components/SummaryCard";
 import IncomeExpenseChart from "../components/IncomeExpenseChart";
@@ -35,7 +35,7 @@ function DashboardPage() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#f9f9f9",
+          backgroundColor: "#f9f9f9", 
           display: "flex",
           flexDirection: "column",
         }}
@@ -61,13 +61,14 @@ function DashboardPage() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#ffffff", 
         paddingBottom: "2rem",
       }}
     >
       <Navbar />
 
       <Container maxWidth="xl" sx={{ py: 6 }}>
+
         <Typography
           variant="h3"
           fontWeight="bold"
