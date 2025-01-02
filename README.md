@@ -30,7 +30,7 @@ Expense Manager is a web application designed to help users manage their persona
 
    ```bash
    git clone https://github.com/dipvaghasiya/Expense_tracker.git
-   cd expense-manager
+   cd Expense_tracker
    ```
 
 2. **Install dependencies for Frontend and Backend:**
